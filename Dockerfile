@@ -1,17 +1,15 @@
-# Step 1: Gradle 빌드 이미지 
-FROM gradle:8.4-jdk17 AS builder
+# Step 1: 빌드 이미지
+FROM gradle:8.5-jdk17 AS builder
 
 WORKDIR /app
 
-# 빌드 캐시 최적화를 위해 순서대로 복사
-COPY build.gradle .
-COPY settings.gradle .
-COPY gradlew .
-COPY gradlew.bat .
-COPY gradle ./gradle
-COPY src ./src
+# gradle wrapper 포함 전체 프로젝트 복사
+COPY . .
 
-# 의존성 먼저 다운로드
+# gradlew에 실행 권한 부여
+RUN chmod +x gradlew
+
+# 의존성 먼저 다운로드 후 빌드
 RUN ./gradlew build -x test
 
 # Step 2: 실행 이미지
@@ -21,7 +19,6 @@ WORKDIR /app
 
 COPY --from=builder /app/build/libs/*.jar app.jar
 
-# Render는 PORT를 환경변수로 넘김
 ENV PORT=8080
 EXPOSE ${PORT}
 
