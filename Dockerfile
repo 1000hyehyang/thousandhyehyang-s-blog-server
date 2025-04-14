@@ -1,4 +1,4 @@
-# Step 1: Gradle 빌드 이미지
+# Step 1: Gradle 빌드 이미지 
 FROM gradle:8.4-jdk17 AS builder
 
 WORKDIR /app
