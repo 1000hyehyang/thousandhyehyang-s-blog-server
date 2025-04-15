@@ -18,13 +18,13 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @GetMapping
+    @GetMapping(produces = "application/json")
     public ApiResponse<List<CommentResponse>> getComments(@PathVariable Long postId) {
         List<CommentResponse> comments = commentService.getCommentsByPost(postId);
         return ApiResponse.success(comments);
     }
 
-    @PostMapping
+    @PostMapping(produces = "application/json")
     public ApiResponse<CommentResponse> addComment(
             @PathVariable Long postId,
             @RequestBody CommentRequest request
