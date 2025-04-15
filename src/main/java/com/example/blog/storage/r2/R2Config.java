@@ -8,20 +8,19 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Configuration;
-import software.amazon.awssdk.services.s3.S3Configuration.Builder;
 
 import java.net.URI;
 
 @Configuration
 public class R2Config {
 
-    @Value("${cloud.r2.access-key}")
+    @Value("${cloudflare.r2.access-key}")
     private String accessKey;
 
-    @Value("${cloud.r2.secret-key}")
+    @Value("${cloudflare.r2.secret-key}")
     private String secretKey;
 
-    @Value("${cloud.r2.endpoint}")
+    @Value("${cloudflare.r2.endpoint}")
     private String endpoint;
 
     @Bean
