@@ -18,16 +18,20 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+    // GET /api/posts/{postId}/comments
     @GetMapping
     public ApiResponse<List<CommentResponse>> getComments(@PathVariable Long postId) {
-        return ApiResponse.success(commentService.getCommentsByPost(postId));
+        List<CommentResponse> comments = commentService.getCommentsByPost(postId);
+        return ApiResponse.success(comments);
     }
 
+    // POST /api/posts/{postId}/comments
     @PostMapping
     public ApiResponse<CommentResponse> addComment(
             @PathVariable Long postId,
             @RequestBody CommentRequest request
     ) {
-        return ApiResponse.success(commentService.addComment(postId, request));
+        CommentResponse saved = commentService.addComment(postId, request);
+        return ApiResponse.success(saved);
     }
 }

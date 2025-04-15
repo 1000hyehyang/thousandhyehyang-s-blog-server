@@ -1,4 +1,5 @@
 package com.example.blog.domain.post.dto;
+
 public record PostRequest(
         String title,
         String category,

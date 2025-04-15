@@ -2,6 +2,7 @@ package com.example.blog.domain.post.service;
 
 import com.example.blog.domain.post.dto.PostRequest;
 import com.example.blog.domain.post.dto.PostResponse;
+import com.example.blog.domain.post.dto.PagedPostResponse;
 import com.example.blog.domain.post.entity.Post;
 import com.example.blog.domain.post.repository.PostRepository;
 import org.springframework.data.domain.Page;
@@ -22,7 +23,6 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    // 글 작성
     public Long create(PostRequest request) {
         Post post = new Post(
                 request.title(),
@@ -31,30 +31,32 @@ public class PostService {
                 request.tags(),
                 request.thumbnailUrl()
         );
-        Post saved = postRepository.save(post);
-        return saved.getId();
+        return postRepository.save(post).getId();
     }
 
-    // 페이지네이션 글 목록 조회
-    public Page<PostResponse> getPagedPosts(int page, int size, String category) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<Post> pageResult;
-
-        if (category == null || category.equals("전체")) {
-            pageResult = postRepository.findAll(pageable);
-        } else {
-            pageResult = postRepository.findByCategory(category, pageable);
-        }
-
-        return pageResult.map(this::toResponse);
-    }
-
-
-    // 단일 글 조회
     public PostResponse getById(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 글을 찾을 수 없습니다: id = " + id));
         return toResponse(post);
+    }
+
+    public PagedPostResponse getPagedPostsResponse(int page, int size, String category) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Post> pageResult =
+                (category == null || category.equals("전체")) ?
+                        postRepository.findAll(pageable) :
+                        postRepository.findByCategory(category, pageable);
+
+        List<PostResponse> posts = pageResult.getContent().stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+
+        return new PagedPostResponse(
+                posts,
+                pageResult.getNumber() + 1,
+                pageResult.getTotalPages(),
+                pageResult.getTotalElements()
+        );
     }
 
     private PostResponse toResponse(Post post) {

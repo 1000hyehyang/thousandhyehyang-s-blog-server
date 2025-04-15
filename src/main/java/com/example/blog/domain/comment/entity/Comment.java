@@ -2,6 +2,7 @@ package com.example.blog.domain.comment.entity;
 
 import com.example.blog.domain.post.entity.Post;
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,7 +21,7 @@ public class Comment {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    // Getters & Setters
+    // Getter & Setter
     public Long getId() { return id; }
 
     public String getNickname() { return nickname; }

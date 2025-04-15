@@ -35,7 +35,7 @@ public class CommentService {
 
     public CommentResponse addComment(Long postId, CommentRequest request) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다: id = " + postId));
 
         Comment comment = new Comment();
         comment.setPost(post);
