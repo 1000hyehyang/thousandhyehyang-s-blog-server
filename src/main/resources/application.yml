@@ -34,6 +34,7 @@ cloudflare:
     secret-key: ${R2_SECRET_KEY}
     bucket: ${R2_BUCKET}
     region: auto
+    public-url: ${R2_PUBLIC_URL}
     endpoint: ${R2_ENDPOINT}
 
 supabase:

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.core.sync.RequestBody;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -17,31 +18,26 @@ public class R2StorageService {
     @Value("${cloudflare.r2.bucket}")
     private String bucket;
 
-    @Value("${cloudflare.r2.endpoint}")
-    private String endpoint;
+    @Value("${cloudflare.r2.public-url}")
+    private String publicUrl;
 
     public R2StorageService(S3Client s3Client) {
         this.s3Client = s3Client;
     }
 
     public String upload(MultipartFile file) throws IOException {
-        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        String safeFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucket)
-                .key(fileName)
+                .key(safeFileName)
                 .contentType(file.getContentType())
-                .acl("public-read")
                 .build();
 
-        s3Client.putObject(request, software.amazon.awssdk.core.sync.RequestBody.fromInputStream(
+        s3Client.putObject(request, RequestBody.fromInputStream(
                 file.getInputStream(), file.getSize()
         ));
 
-        return bucketUrl(fileName);
-    }
-
-    private String bucketUrl(String key) {
-        return endpoint + "/" + key;
+        return publicUrl + "/" + safeFileName;
     }
 }
