@@ -31,6 +31,7 @@ public class R2StorageService {
                 .bucket(bucket)
                 .key(fileName)
                 .contentType(file.getContentType())
+                .acl("public-read")
                 .build();
 
         s3Client.putObject(request, software.amazon.awssdk.core.sync.RequestBody.fromInputStream(
